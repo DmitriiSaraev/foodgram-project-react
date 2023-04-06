@@ -2,13 +2,13 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 
+ADMIN = 'admin'
+USER = 'user'
+
+ROLE_CHOICES = [(ADMIN, 'admin'), (USER, 'user')]
+
+
 class User(AbstractUser):
-    username = models.CharField(
-        max_length=150,
-        unique=True,
-        blank=False,
-        null=False
-    )
     email = models.EmailField(
         max_length=254,
         unique=True,
@@ -29,6 +29,15 @@ class User(AbstractUser):
         null=False,
         blank=True,
     )
+
+    role = models.CharField(
+        verbose_name='роль',
+        default=USER,
+        choices=ROLE_CHOICES,
+        max_length=5,
+    )
+
+    REQUIRED_FIELDS = ['first_name', 'last_name', 'email']
 
     class Meta:
         ordering = ('id',)

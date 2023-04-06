@@ -83,7 +83,6 @@ class Recipe(models.Model):
 
     ingredients = models.ManyToManyField(
         Ingredient,
-        null=False,
         blank=False,
         through='AmountIngredient',
         verbose_name='Ингредиенты',
@@ -92,7 +91,6 @@ class Recipe(models.Model):
 
     tags = models.ManyToManyField(
         Tag,
-        null=True,
         blank=False,
         through='RecipeTag',
         verbose_name='Теги',
@@ -102,7 +100,6 @@ class Recipe(models.Model):
     cooking_time = models.IntegerField(blank=False)
 
     pub_date = models.DateTimeField(
-        'Дата публикации',
         auto_now_add=True,
         verbose_name='Дата публикации',
     )
