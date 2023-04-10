@@ -13,3 +13,4 @@ class UserViewSet(viewsets.ModelViewSet):
 # Получить конкретные записи без кверисета,
 # нужно переопределить метод get_quriset
 # Спринт 8/18 → Тема 1/3: Django Rest Framework → Урок 8/15
+
