@@ -1,7 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 
-from api.serializers import UserSerializer
+from api.serializers import UserSerializer, RecipeSerializer
+from recipes.models import Recipe
 from users.models import User
 
 
@@ -9,6 +10,11 @@ class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
     # permission_classes = (IsAuthenticated,)
+
+
+class RecipeViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer
 
 
 
