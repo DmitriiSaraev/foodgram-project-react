@@ -7,7 +7,7 @@ from api.views import UserViewSet, RecipeViewSet
 app_name = 'api'
 
 router_v1 = routers.SimpleRouter()
-# router_v1.register(r'users', UserViewSet)
+router_v1.register(r'users', UserViewSet)
 router_v1.register(r'recipe', RecipeViewSet)
 
 urlpatterns = [
