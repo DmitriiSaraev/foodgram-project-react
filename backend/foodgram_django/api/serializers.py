@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from recipes.models import Recipe, Follow, Tag
+from recipes.models import Recipe, Follow, Tag, Ingredient, AmountIngredient, \
+    Favorite
 from users.models import User
 from djoser.serializers import UserCreateSerializer
 
@@ -46,18 +47,57 @@ class CastomUserCreateSerializer(UserCreateSerializer):
         )
 
 
-class TagSirializer(serializers.ModelSerializer):
+class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
         fields = (
-            "id",
-            "name",
-            "color",
-            "slug",
+            'id',
+            'name',
+            'color',
+            'slug',
+        )
+
+
+class IngredientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Ingredient
+        fields = (
+            'id',
+            'name',
+            'measurement_unit',
+        )
+
+
+class AmountIngredientSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = AmountIngredient
+        fields = (
+            'id',
+            'ingredient',
+            'amount',
         )
 
 
 class RecipeSerializer(serializers.ModelSerializer):
+    # Про картинки Спринт 9/18 → Тема 2/4: Взаимодействие фронтенда и
+    # бэкенда → Урок 1/7
+    author = UserSerializer()
+    tags = TagSerializer(many=True)
+    ingredients = IngredientSerializer(many=True)
+    is_favorited = serializers.SerializerMethodField()
+    # is_in_shopping_cart = serializers.SerializerMethodField()
+
+    def get_is_favorited(self, obj):
+        if self.context['request'].user.is_authenticated:
+            return Favorite.objects.filter(
+                user=self.context['request'].user,
+                recipe=obj).exists()
+        return False
+
     class Meta:
         model = Recipe
-        fields = '__all__'
+        fields = (
+            'id', 'tags', 'author', 'ingredients',
+            'name', 'image', 'text', 'cooking_time',
+            'is_favorited'
+        )

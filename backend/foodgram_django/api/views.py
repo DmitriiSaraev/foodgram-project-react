@@ -1,11 +1,15 @@
 from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
+from django_filters.rest_framework import DjangoFilterBackend
 
+from api.filters import RecipeFilter
 from api.serializers import (
-    UserSerializer, RecipeSerializer, TagSirializer
+    UserSerializer, RecipeSerializer, TagSerializer, IngredientSerializer,
+    AmountIngredientSerializer
 )
-from recipes.models import Recipe, Tag
+from recipes.models import Recipe, Tag, Ingredient, AmountIngredient
 from users.models import User
+
 
 
 class UserViewSet(viewsets.ModelViewSet):
@@ -16,15 +20,24 @@ class UserViewSet(viewsets.ModelViewSet):
 
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
-    serializer_class = TagSirializer
+    serializer_class = TagSerializer
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = RecipeFilter
 
 
+class IngredientViewSet(viewsets.ModelViewSet):
+    queryset = Ingredient.objects.all()
+    serializer_class = IngredientSerializer
 
+
+class AmountIngredientViewSet(viewsets.ModelViewSet):
+    queryset = AmountIngredient.objects.all()
+    serializer_class = AmountIngredientSerializer
 
 
 # Получить конкретные записи без кверисета,
