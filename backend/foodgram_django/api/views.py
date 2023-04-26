@@ -11,7 +11,6 @@ from recipes.models import Recipe, Tag, Ingredient, AmountIngredient
 from users.models import User
 
 
-
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer

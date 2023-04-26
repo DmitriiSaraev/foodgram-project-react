@@ -94,6 +94,15 @@ class RecipeSerializer(serializers.ModelSerializer):
                 recipe=obj).exists()
         return False
 
+    def validate_tags(self, value):
+        if len(value) == 0:
+            raise serializers.ValidationError(
+                'У рецепта должен быть минимум 1 тег!')
+
+    def validate_user(self, value):
+        pass
+
+
     class Meta:
         model = Recipe
         fields = (

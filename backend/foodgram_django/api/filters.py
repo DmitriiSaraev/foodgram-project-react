@@ -20,7 +20,6 @@ class RecipeFilter(filters.FilterSet):
         model = Recipe
         fields = ['author', 'tag', 'is_favorited']
 
-
     def get_is_favorited(self, queryset, name, value):
         if value:
             return queryset.filter(favorite_recipes__user=self.request.user)
