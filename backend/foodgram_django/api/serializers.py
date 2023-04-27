@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 from recipes.models import Recipe, Follow, Tag, Ingredient, AmountIngredient, \
-    Favorite
+    Favorite, RecipeTag
 from users.models import User
 from djoser.serializers import UserCreateSerializer
 
@@ -82,8 +82,8 @@ class RecipeSerializer(serializers.ModelSerializer):
     # Про картинки Спринт 9/18 → Тема 2/4: Взаимодействие фронтенда и
     # бэкенда → Урок 1/7
     author = UserSerializer()
-    tags = TagSerializer(many=True)
-    ingredients = IngredientSerializer(many=True)
+    tags = TagSerializer(many=True, read_only=True)
+    ingredients = IngredientSerializer(many=True, read_only=True)
     is_favorited = serializers.SerializerMethodField()
     # is_in_shopping_cart = serializers.SerializerMethodField()
 
@@ -102,6 +102,17 @@ class RecipeSerializer(serializers.ModelSerializer):
     def validate_user(self, value):
         pass
 
+    def create(self, validated_data):
+        print(validated_data)
+        tags = validated_data.pop('tags')
+        recipe = Recipe.objects.create(**validated_data)
+
+        for tag in tags:
+            current_tag = Tag.objects.get(**tag)
+            RecipeTag.objects.create(
+                tag=current_tag, recipe=recipe)
+
+        return recipe
 
     class Meta:
         model = Recipe
