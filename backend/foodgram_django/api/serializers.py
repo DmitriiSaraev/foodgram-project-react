@@ -99,11 +99,7 @@ class RecipeSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 'У рецепта должен быть минимум 1 тег!')
 
-    def validate_user(self, value):
-        pass
-
     def create(self, validated_data):
-        print(validated_data)
         tags = validated_data.pop('tags')
         recipe = Recipe.objects.create(**validated_data)
 
@@ -111,7 +107,6 @@ class RecipeSerializer(serializers.ModelSerializer):
             current_tag = Tag.objects.get(**tag)
             RecipeTag.objects.create(
                 tag=current_tag, recipe=recipe)
-
         return recipe
 
     class Meta:
