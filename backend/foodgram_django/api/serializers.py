@@ -1,7 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from recipes.models import Recipe, Follow, Tag, Ingredient, AmountIngredient, \
+from recipes.models import Recipe, Subscription, Tag, Ingredient, AmountIngredient, \
     Favorite, RecipeTag, ShoppingCart
 from users.models import User
 from djoser.serializers import UserCreateSerializer
@@ -28,9 +28,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     def get_is_subscribed(self, obj):
         if self.context['request'].user.is_authenticated:
-            return Follow.objects.filter(
-                follower=self.context['request'].user,
-                following=obj).exists()
+            return Subscription.objects.filter(
+                subscriber=self.context['request'].user,
+                author=obj).exists()
         return False
 
 
@@ -178,5 +178,57 @@ class ShopingCartSerializer(serializers.ModelSerializer):
             'recipe',
         )
 
-    def create(self, validated_data):
-        print(validated_data)
+
+class SubscriptionsRecipeSerializer(serializers.ModelSerializer):
+    '''Для отображения рецептов в подписке'''
+    class Meta:
+        model = Recipe
+        fields = (
+            'id',
+            'name',
+            'cooking_time',
+        )
+
+
+class SubscriptionsSerializer(serializers.ModelSerializer):
+    '''Поулучает подписки'''
+    class Meta:
+        model = User
+        fields = (
+            'email',
+            'id',
+            'username',
+            'first_name',
+            'last_name',
+            'is_subscribed',
+            'recipes',
+            'recipes_count',
+        )
+
+    is_subscribed = serializers.SerializerMethodField()
+    recipes = SubscriptionsRecipeSerializer(many=True, read_only=True)
+    recipes_count = serializers.SerializerMethodField()
+
+    def get_is_subscribed(self, obj):
+        return True
+
+    def get_recipes_count(self, obj):
+        return obj.recipes.all().count()
+
+
+
+
+class SubscribeSerializer(serializers.ModelSerializer):
+    '''Подписывается'''
+    author = UserSerializer(
+            read_only=True, default=serializers.CurrentUserDefault())
+
+
+    class Meta:
+        model = Subscription
+        fields = (
+            'author',
+            'subscriber',
+        )
+
+

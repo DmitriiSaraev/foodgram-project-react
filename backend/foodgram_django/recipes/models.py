@@ -217,14 +217,14 @@ class Favorite(models.Model):
         return f'Избраные рецепты пользователя {self.user}'
 
 
-class Follow(models.Model):
-    follower = models.ForeignKey(
+class Subscription(models.Model):
+    subscriber = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         verbose_name='Подписчик',
         related_name='followings',
     )
-    following = models.ForeignKey(
+    author = models.ForeignKey(
         User,
         on_delete=models.CASCADE,
         verbose_name='Автор',
@@ -236,8 +236,8 @@ class Follow(models.Model):
         verbose_name_plural = 'Подписки'
         constraints = (
             models.UniqueConstraint(
-                fields=('follower', 'following'),
+                fields=('subscriber', 'author'),
                 name='unique_follow'),)
 
     def __str__(self):
-        return f'Подписки пользоваеля {self.follower}'
+        return f'Подписки пользоваеля {self.subscriber}'

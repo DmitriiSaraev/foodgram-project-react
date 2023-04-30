@@ -7,10 +7,11 @@ from django_filters.rest_framework import DjangoFilterBackend
 from api.filters import RecipeFilter
 from api.serializers import (
     UserSerializer, RecipeSerializer, TagSerializer, IngredientSerializer,
-    AmountIngredientSerializer, ShopingCartSerializer
+    AmountIngredientSerializer, ShopingCartSerializer, SubscriptionsSerializer,
+    SubscribeSerializer
 )
 from recipes.models import Recipe, Tag, Ingredient, AmountIngredient, \
-    ShoppingCart, Favorite
+    ShoppingCart, Favorite, Subscription
 from users.models import User
 
 
@@ -123,6 +124,59 @@ class AmountIngredientViewSet(viewsets.ModelViewSet):
     queryset = AmountIngredient.objects.all()
     serializer_class = AmountIngredientSerializer
 
+
+class SubscriptionsViewSet(viewsets.ModelViewSet):
+    serializer_class = SubscriptionsSerializer
+
+    def get_queryset(self):
+        subscriptions = Subscription.objects.values(
+            'author_id'
+        ).filter(subscriber=self.request.user)
+        queryset = User.objects.filter(id__in=subscriptions)
+        return queryset
+
+
+class SubscribeViewSet(viewsets.ModelViewSet):
+    queryset = Subscription.objects.all()
+    serializer_class = SubscribeSerializer
+
+    @action(methods=['post', 'delete'], detail=True)
+    def subscribe(self, request, pk):
+        """ Метод работает с подпиской """
+        if request.method == 'POST':
+            if Subscription.objects.filter(
+                    subscriber=request.user,
+                    author__id=pk).exists():
+                return Response(
+                    'Вы подписаны на этого автора',
+                    status=status.HTTP_400_BAD_REQUEST,
+                )
+
+            subscribe = Subscription.objects.create(
+                author_id=pk,
+                subscriber=request.user
+            )
+            if subscribe:
+                return Response(
+                    'Вы подписались',
+                    status=status.HTTP_201_CREATED,
+                )
+
+        if request.method == 'DELETE':
+            subscribe = Subscription.objects.filter(
+                    subscriber=request.user,
+                    author__id=pk)
+            if subscribe:
+                subscribe.delete()
+                return Response(
+                    'Успешная отписка',
+                    status=status.HTTP_204_NO_CONTENT,
+                )
+
+            return Response(
+                'Вы не подписаны',
+                status=status.HTTP_400_BAD_REQUEST,
+            )
 
 # Получить конкретные записи без кверисета,
 # нужно переопределить метод get_quriset
