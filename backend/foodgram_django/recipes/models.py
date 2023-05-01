@@ -73,9 +73,8 @@ class Recipe(models.Model):
         blank=False,
         verbose_name='Наименование',
     )
-    image = models.BinaryField(
-        models.ImageField(upload_to='recipes/')
-    )
+    image = models.ImageField(upload_to='recipes/')
+
     text = models.TextField(
         null=False,
         blank=False,

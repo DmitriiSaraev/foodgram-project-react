@@ -4,7 +4,7 @@ from rest_framework.decorators import action
 from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 
-from api.filters import RecipeFilter
+from api.filters import RecipeFilter, IngredientFilter
 from api.serializers import (
     UserSerializer, RecipeSerializer, TagSerializer, IngredientSerializer,
     AmountIngredientSerializer, ShopingCartSerializer, SubscriptionsSerializer,
@@ -118,6 +118,8 @@ class RecipeViewSet(viewsets.ModelViewSet):
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
     serializer_class = IngredientSerializer
+    filter_backends = (DjangoFilterBackend,)
+    filterset_class = IngredientFilter
 
 
 class AmountIngredientViewSet(viewsets.ModelViewSet):

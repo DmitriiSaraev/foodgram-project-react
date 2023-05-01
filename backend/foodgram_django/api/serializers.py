@@ -1,8 +1,13 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from django.core.files.base import ContentFile
+import base64
+# from drf_extra_fields.fields import Base64ImageField
 
-from recipes.models import Recipe, Subscription, Tag, Ingredient, AmountIngredient, \
+from recipes.models import (
+    Recipe, Subscription, Tag, Ingredient, AmountIngredient,
     Favorite, RecipeTag, ShoppingCart
+)
 from users.models import User
 from djoser.serializers import UserCreateSerializer
 
@@ -34,19 +39,6 @@ class UserSerializer(serializers.ModelSerializer):
         return False
 
 
-class CastomUserCreateSerializer(UserCreateSerializer):
-    class Meta:
-        model = User
-        fields = (
-            "email",
-            'id',
-            "username",
-            "first_name",
-            "last_name",
-            "password",
-        )
-
-
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
@@ -74,10 +66,6 @@ class AmountIngredientSerializer(serializers.ModelSerializer):
     measurement_unit = serializers.ReadOnlyField(
         source='ingredient.measurement_unit')
 
-    # def to_representation(self, instance):
-    #     # Добавляем отладочный вывод
-    #     return super().to_representation(instance)
-
     class Meta:
         model = AmountIngredient
         fields = (
@@ -88,9 +76,31 @@ class AmountIngredientSerializer(serializers.ModelSerializer):
         )
 
 
+class Base64ImageField(serializers.ImageField):
+    def to_internal_value(self, data):
+        if isinstance(data, str) and data.startswith('data:image'):
+            format, imgstr = data.split(';base64,')
+            ext = format.split('/')[-1]
+            data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
+
+        return super().to_internal_value(data)
+
+# class Base64ImageField(serializers.ImageField):
+#     def to_internal_value(self, data):
+#         if isinstance(data, str) and data.startswith('data:image'):
+#             format, imgstr = data.split(';base64,')
+#             ext = format.split('/')[-1]
+#             # Преобразуем Base64-строку в байты перед декодированием
+#             imgbytes = bytes(imgstr, encoding='utf-8')
+#             data = ContentFile(base64.b64decode(imgbytes), name='temp.' + ext)
+#
+#         return super().to_internal_value(data)
+
+
 class RecipeSerializer(serializers.ModelSerializer):
     # Про картинки Спринт 9/18 → Тема 2/4: Взаимодействие фронтенда и
     # бэкенда → Урок 1/7
+    image = Base64ImageField(required=False, allow_null=True)
     author = UserSerializer(
             read_only=True, default=serializers.CurrentUserDefault())
     tags = TagSerializer(many=True, read_only=True)
@@ -99,8 +109,10 @@ class RecipeSerializer(serializers.ModelSerializer):
         read_only=True,
         source='recipe_to_ingredient'
     )
+
     is_favorited = serializers.SerializerMethodField()
-    # is_in_shopping_cart = serializers.SerializerMethodField()
+    is_in_shopping_cart = serializers.SerializerMethodField()
+
     # author = serializers.PrimaryKeyRelatedField(
     #     read_only=True, default=serializers.CurrentUserDefault())
 
@@ -113,6 +125,13 @@ class RecipeSerializer(serializers.ModelSerializer):
     def get_is_favorited(self, obj):
         if self.context['request'].user.is_authenticated:
             return Favorite.objects.filter(
+                user=self.context['request'].user,
+                recipe=obj).exists()
+        return False
+
+    def get_is_in_shopping_cart(self, obj):
+        if self.context['request'].user.is_authenticated:
+            return ShoppingCart.objects.filter(
                 user=self.context['request'].user,
                 recipe=obj).exists()
         return False
@@ -145,8 +164,9 @@ class RecipeSerializer(serializers.ModelSerializer):
         # tags_id = self.context.get('request').data.get('tags')
         # tags = Tag.objects.filter(id__in=tags_id)
         tags = self.get_tags()
+        image = validated_data.pop('image')
         ingredients = self.initial_data.get('ingredients')
-        recipe = Recipe.objects.create(**validated_data)
+        recipe = Recipe.objects.create(**validated_data, image=image)
 
         for tag in tags:
             RecipeTag.objects.create(
@@ -165,7 +185,7 @@ class RecipeSerializer(serializers.ModelSerializer):
         fields = (
             'id', 'tags', 'author', 'ingredients',
             'name', 'image', 'text', 'cooking_time',
-            'is_favorited'
+            'is_favorited', 'is_in_shopping_cart',
         )
         read_only_fields = ('author',)
 
