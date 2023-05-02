@@ -146,7 +146,7 @@ AUTH_USER_MODEL = 'users.User'
 
 REST_FRAMEWORK = {
     'DEFAULT_PERMISSION_CLASSES': [
-        'rest_framework.permissions.AllowAny',
+        'rest_framework.permissions.IsAuthenticated',
     ],
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
@@ -165,7 +165,7 @@ REST_FRAMEWORK = {
 DJOSER = {
     'SERIALIZERS': {
         'user': 'api.serializers.UserSerializer',
-        'user_create': 'api.serializers.CastomUserCreateSerializer',
+        'user_create': 'api.serializers.UserCreateMySerializer',
         'current_user': 'api.serializers.UserSerializer'},
     'LOGIN_FIELD': 'email',
     'PERMISSIONS': {

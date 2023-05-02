@@ -39,6 +39,21 @@ class UserSerializer(serializers.ModelSerializer):
         return False
 
 
+class UserCreateMySerializer(UserCreateSerializer):
+    """Для создания юзера"""
+
+    class Meta:
+        model = User
+        fields = (
+            'id',
+            'email',
+            'username',
+            'last_name',
+            'first_name',
+            'password',
+        )
+
+
 class TagSerializer(serializers.ModelSerializer):
     class Meta:
         model = Tag
@@ -84,17 +99,6 @@ class Base64ImageField(serializers.ImageField):
             data = ContentFile(base64.b64decode(imgstr), name='temp.' + ext)
 
         return super().to_internal_value(data)
-
-# class Base64ImageField(serializers.ImageField):
-#     def to_internal_value(self, data):
-#         if isinstance(data, str) and data.startswith('data:image'):
-#             format, imgstr = data.split(';base64,')
-#             ext = format.split('/')[-1]
-#             # Преобразуем Base64-строку в байты перед декодированием
-#             imgbytes = bytes(imgstr, encoding='utf-8')
-#             data = ContentFile(base64.b64decode(imgbytes), name='temp.' + ext)
-#
-#         return super().to_internal_value(data)
 
 
 class RecipeSerializer(serializers.ModelSerializer):
@@ -200,18 +204,19 @@ class ShopingCartSerializer(serializers.ModelSerializer):
 
 
 class SubscriptionsRecipeSerializer(serializers.ModelSerializer):
-    '''Для отображения рецептов в подписке'''
+    """Для отображения рецептов в подписке"""
     class Meta:
         model = Recipe
         fields = (
             'id',
             'name',
             'cooking_time',
+            'image',
         )
 
 
 class SubscriptionsSerializer(serializers.ModelSerializer):
-    '''Поулучает подписки'''
+    """Поулучает подписки"""
     class Meta:
         model = User
         fields = (
@@ -236,13 +241,10 @@ class SubscriptionsSerializer(serializers.ModelSerializer):
         return obj.recipes.all().count()
 
 
-
-
 class SubscribeSerializer(serializers.ModelSerializer):
-    '''Подписывается'''
+    """Подписывается"""
     author = UserSerializer(
             read_only=True, default=serializers.CurrentUserDefault())
-
 
     class Meta:
         model = Subscription
@@ -250,5 +252,3 @@ class SubscribeSerializer(serializers.ModelSerializer):
             'author',
             'subscriber',
         )
-
-

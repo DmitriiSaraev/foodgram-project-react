@@ -1,10 +1,10 @@
 from rest_framework.response import Response
-from rest_framework import viewsets, status
+from rest_framework import viewsets, status, permissions
 from rest_framework.decorators import action
-from rest_framework.permissions import IsAuthenticated
 from django_filters.rest_framework import DjangoFilterBackend
 
 from api.filters import RecipeFilter, IngredientFilter
+from api.permissions import AuthorOrReadOnly
 from api.serializers import (
     UserSerializer, RecipeSerializer, TagSerializer, IngredientSerializer,
     AmountIngredientSerializer, ShopingCartSerializer, SubscriptionsSerializer,
@@ -29,10 +29,10 @@ class TagViewSet(viewsets.ModelViewSet):
 class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
+    permission_classes = (AuthorOrReadOnly,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
 
-    # Спринт 8 / 18 → Тема 1 / 3: Django Rest Framework → Урок 14 / 15
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
