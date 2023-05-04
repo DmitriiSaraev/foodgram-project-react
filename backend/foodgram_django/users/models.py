@@ -29,7 +29,6 @@ class User(AbstractUser):
         null=False,
         blank=True,
     )
-
     role = models.CharField(
         verbose_name='роль',
         default=USER,

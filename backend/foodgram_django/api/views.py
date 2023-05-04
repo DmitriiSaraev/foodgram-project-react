@@ -1,5 +1,8 @@
+from django.db.models import Sum
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404
 from rest_framework.response import Response
-from rest_framework import viewsets, status, permissions
+from rest_framework import viewsets, status
 from rest_framework.decorators import action
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -7,18 +10,17 @@ from api.filters import RecipeFilter, IngredientFilter
 from api.permissions import AuthorOrReadOnly
 from api.serializers import (
     UserSerializer, RecipeSerializer, TagSerializer, IngredientSerializer,
-    AmountIngredientSerializer, ShopingCartSerializer, SubscriptionsSerializer,
+    AmountIngredientSerializer, SubscriptionsSerializer,
     SubscribeSerializer
 )
-from recipes.models import Recipe, Tag, Ingredient, AmountIngredient, \
-    ShoppingCart, Favorite, Subscription
+from recipes.models import (Recipe, Tag, Ingredient, AmountIngredient,
+                            ShoppingCart, Favorite, Subscription)
 from users.models import User
 
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
-    # permission_classes = (IsAuthenticated,)
 
 
 class TagViewSet(viewsets.ModelViewSet):
@@ -114,6 +116,36 @@ class RecipeViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_400_BAD_REQUEST,
             )
 
+    @action(methods=['get'], detail=False)
+    def download_shopping_cart(self, request):
+        list_ingredient = request.user.shopping_cart.all().values_list(
+            'recipe__recipe_to_ingredient__ingredient', ).annotate(
+            amount=Sum('recipe__recipe_to_ingredient__amount'))
+
+        file = open('text.txt', 'w')
+
+        for ingredient in list_ingredient:
+            # позже попробовать сделать 1 запрос к базе
+            ingredient_obj = get_object_or_404(Ingredient, id=ingredient[0])
+            output_string = (
+                f'{ingredient_obj.name}'
+                f' {ingredient[1]}'
+                f'({ingredient_obj.measurement_unit})'
+            )
+            file.write(output_string + '\n')
+        file.close()
+
+        with open('text.txt', 'rb') as file:
+            response = HttpResponse(file.read(),
+                                    content_type='text/plain,'
+                                                 ' charset=utf8'
+                                    )
+            response['Content-Disposition'] = (
+                f'attachment; filename="Список покупок.txt"'
+            )
+
+        return response
+
 
 class IngredientViewSet(viewsets.ModelViewSet):
     queryset = Ingredient.objects.all()
@@ -179,8 +211,3 @@ class SubscribeViewSet(viewsets.ModelViewSet):
                 'Вы не подписаны',
                 status=status.HTTP_400_BAD_REQUEST,
             )
-
-# Получить конкретные записи без кверисета,
-# нужно переопределить метод get_quriset
-# Спринт 8/18 → Тема 1/3: Django Rest Framework → Урок 8/15
-

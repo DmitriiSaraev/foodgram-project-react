@@ -42,7 +42,6 @@ class Ingredient(models.Model):
         blank=False,
         verbose_name='Наименование',
     )
-
     measurement_unit = models.CharField(
         max_length=200,
         null=False,
@@ -74,12 +73,10 @@ class Recipe(models.Model):
         verbose_name='Наименование',
     )
     image = models.ImageField(upload_to='recipes/')
-
     text = models.TextField(
         null=False,
         blank=False,
     )
-
     ingredients = models.ManyToManyField(
         Ingredient,
         blank=False,
@@ -87,7 +84,6 @@ class Recipe(models.Model):
         verbose_name='Ингредиенты',
         related_name='recipes',
     )
-
     tags = models.ManyToManyField(
         Tag,
         blank=False,
@@ -95,9 +91,7 @@ class Recipe(models.Model):
         verbose_name='Теги',
         related_name='tags',
     )
-
     cooking_time = models.IntegerField(blank=False)
-
     pub_date = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Дата публикации',
@@ -117,7 +111,6 @@ class RecipeTag(models.Model):
         Recipe,
         on_delete=models.CASCADE,
     )
-
     tag = models.ForeignKey(
         Tag,
         on_delete=models.CASCADE,
@@ -157,7 +150,7 @@ class AmountIngredient(models.Model):
                 name='unique_recipe_ingredient'),)
 
     def __str__(self):
-        return f'Список ингредиентов для рецепта {self.recipe}'
+        return f'Список ингредиентов для {self.recipe}'
 
 
 class ShoppingCart(models.Model):
@@ -168,7 +161,6 @@ class ShoppingCart(models.Model):
         verbose_name='Пользователь',
         related_name='shopping_cart',
     )
-
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,
@@ -196,7 +188,6 @@ class Favorite(models.Model):
         verbose_name='Пользователь',
         related_name='favorite_recipes',
     )
-
     recipe = models.ForeignKey(
         Recipe,
         on_delete=models.CASCADE,

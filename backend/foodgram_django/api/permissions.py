@@ -17,4 +17,3 @@ class AuthorOrReadOnly(permissions.BasePermission):
                 or obj.author == request.user
                 or request.user.role == ADMIN
         )
-        # return obj.author == request.user
