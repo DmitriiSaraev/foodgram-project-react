@@ -1,28 +1,31 @@
 from django.db import models
+from django.core.exceptions import ValidationError
+import re
 
 from users.models import User
+
+
+def validate_hex_color(value):
+    hex_regex = r'^#{0,1}([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
+    if not re.match(hex_regex, value):
+        raise ValidationError('Цвет должен быть в hex формате (#49B64E)')
 
 
 class Tag(models.Model):
     name = models.CharField(
         max_length=200,
         unique=True,
-        null=False,
-        blank=True,
         verbose_name='Наименование',
     )
     color = models.CharField(
         max_length=7,
         unique=True,
-        null=True,
-        blank=False,
         verbose_name='Цвет',
+        validators=[validate_hex_color],
     )
     slug = models.CharField(
         max_length=200,
         unique=True,
-        null=True,
-        blank=False,
         verbose_name='Слаг',
     )
 
@@ -38,14 +41,10 @@ class Ingredient(models.Model):
     name = models.CharField(
         max_length=200,
         unique=True,
-        null=False,
-        blank=False,
         verbose_name='Наименование',
     )
     measurement_unit = models.CharField(
         max_length=200,
-        null=False,
-        blank=False,
         verbose_name='Ед. измерения',
     )
 
@@ -60,38 +59,28 @@ class Ingredient(models.Model):
 class Recipe(models.Model):
     author = models.ForeignKey(
         User,
-        default=1,
         on_delete=models.CASCADE,
-        null=False,
-        blank=False,
         related_name='recipes',
     )
     name = models.CharField(
         max_length=200,
-        null=False,
-        blank=False,
         verbose_name='Наименование',
     )
     image = models.ImageField(upload_to='recipes/')
-    text = models.TextField(
-        null=False,
-        blank=False,
-    )
+    text = models.TextField()
     ingredients = models.ManyToManyField(
         Ingredient,
-        blank=False,
         through='AmountIngredient',
         verbose_name='Ингредиенты',
         related_name='recipes',
     )
     tags = models.ManyToManyField(
         Tag,
-        blank=False,
         through='RecipeTag',
         verbose_name='Теги',
         related_name='tags',
     )
-    cooking_time = models.IntegerField(blank=False)
+    cooking_time = models.PositiveIntegerField()
     pub_date = models.DateTimeField(
         auto_now_add=True,
         verbose_name='Дата публикации',
