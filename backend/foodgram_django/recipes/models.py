@@ -1,7 +1,6 @@
 from django.db import models
 from django.core.exceptions import ValidationError
 import re
-
 from users.models import User
 
 
