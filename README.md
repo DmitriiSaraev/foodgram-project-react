@@ -28,6 +28,6 @@ DB_HOST=db # название сервиса (контейнера)
 DB_PORT=5432 # порт для подключения к БД 
 
 
-scp nginx.conf admin@158.160.12.203:/home/admin/nginx/default.conf
+scp -r frontend admin@158.160.12.203:/home/admin/frontend
 
 home/<ваш_username>/nginx/default.conf
