@@ -1,6 +1,5 @@
 from django_filters import rest_framework as filters
-
-from recipes.models import Recipe, Ingredient
+from recipes.models import Ingredient, Recipe
 
 
 class CharFilterInFilter(filters.BaseInFilter, filters.CharFilter):
@@ -8,16 +7,16 @@ class CharFilterInFilter(filters.BaseInFilter, filters.CharFilter):
 
 
 class RecipeFilter(filters.FilterSet):
-    author = filters.CharFilter(field_name='author__id')
-    tag = CharFilterInFilter(field_name='tags__slug', lookup_expr='in')
-    is_favorited = filters.BooleanFilter(method='get_is_favorited')
+    author = filters.CharFilter(field_name="author__id")
+    tag = CharFilterInFilter(field_name="tags__slug", lookup_expr="in")
+    is_favorited = filters.BooleanFilter(method="get_is_favorited")
     is_in_shopping_cart = filters.BooleanFilter(
-        method='get_is_in_shopping_cart'
+        method="get_is_in_shopping_cart"
     )
 
     class Meta:
         model = Recipe
-        fields = ['is_favorited', 'author', 'is_in_shopping_cart', 'tag']
+        fields = ["is_favorited", "author", "is_in_shopping_cart", "tag"]
 
     def get_is_favorited(self, queryset, name, value):
         if value:
@@ -31,7 +30,7 @@ class RecipeFilter(filters.FilterSet):
 
 
 class IngredientFilter(filters.FilterSet):
-    name = filters.CharFilter(method='get_name')
+    name = filters.CharFilter(method="get_name")
 
     def get_name(self, queryset, name, value):
         if value:
@@ -40,4 +39,4 @@ class IngredientFilter(filters.FilterSet):
 
     class Meta:
         model = Ingredient
-        fields = ['name']
+        fields = ["name"]
