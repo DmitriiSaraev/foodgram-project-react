@@ -39,4 +39,5 @@ cp default.conf /etc/nginx/conf.d/default.conf
 
 
 
+
 home/<ваш_username>/nginx/default.conf
