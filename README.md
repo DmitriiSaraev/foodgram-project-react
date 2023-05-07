@@ -17,3 +17,5 @@ pip freeze > requirements.txt
 django-admin startproject projectname
 создать супер пользователя:
 python manage.py createsuperuser
+
+POSTGRES_PASSWORD MyPassword123
