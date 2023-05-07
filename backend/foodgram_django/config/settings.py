@@ -1,6 +1,8 @@
 import os
 from pathlib import Path
 
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -14,7 +16,9 @@ SECRET_KEY = 'django-insecure-*y@3h=^&d*!rmgt=^&$_&qervu)+hep-#gslpn86mzu_*ve+*p
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*',
+                 'localhost',
+                 '158.160.1.108']
 
 
 # Application definition
@@ -67,20 +71,20 @@ TEMPLATES = [
 ]
 
 # TEMPLATES = [
-#     {
-#         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-#         'DIRS': [],
-#         'APP_DIRS': True,
-#         'OPTIONS': {
-#             'context_processors': [
-#                 'django.template.context_processors.debug',
-#                 'django.template.context_processors.request',
-#                 'django.contrib.auth.context_processors.auth',
-#                 'django.contrib.messages.context_processors.messages',
-#             ],
-#         },
-#     },
-# ]
+# #     {
+# #         'BACKEND': 'django.template.backends.django.DjangoTemplates',
+# #         'DIRS': [],
+# #         'APP_DIRS': True,
+# #         'OPTIONS': {
+# #             'context_processors': [
+# #                 'django.template.context_processors.debug',
+# #                 'django.template.context_processors.request',
+# #                 'django.contrib.auth.context_processors.auth',
+# #                 'django.contrib.messages.context_processors.messages',
+# #             ],
+# #         },
+# #     },
+# # ]
 
 WSGI_APPLICATION = 'config.wsgi.application'
 
@@ -90,8 +94,12 @@ WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
+        'NAME': os.getenv('DB_NAME'),
+        'USER': os.getenv('POSTGRES_USER'),
+        'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
+        'HOST': os.getenv('DB_HOST'),
+        'PORT': os.getenv('DB_PORT')
     }
 }
 
@@ -132,16 +140,24 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
 
+# STATIC_URL = '/static/'
+#
+# MEDIA_URL = '/media/'
+# MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+#
+#
+# STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
+#
+# DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+#
+# AUTH_USER_MODEL = 'users.User'
+
 STATIC_URL = '/static/'
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
-STATICFILES_DIRS = ((BASE_DIR / 'static/'),)
-
-DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-AUTH_USER_MODEL = 'users.User'
 
 
 REST_FRAMEWORK = {
