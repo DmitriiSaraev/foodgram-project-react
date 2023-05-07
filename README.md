@@ -29,5 +29,7 @@ DB_PORT=5432 # порт для подключения к БД
 
 
 scp -r frontend admin@158.160.12.203:/home/admin/frontend
+scp nginx.conf admin@158.160.12.203:/home/admin/nginx/default.conf
+
 
 home/<ваш_username>/nginx/default.conf
