@@ -86,6 +86,15 @@ scp nginx.conf admin@158.160.18.181:/home/admin/nginx.conf
 
 Далее пушим на Гит
 
+посмотреть все контейнеры:
+sudo docker ps -a
+
+посмотреть запущенные контейнеры:
+sudo docker ps
+
+
+посмотреть логи:
+sudo docker logs 69db66638e69
 
 
 docker backend
