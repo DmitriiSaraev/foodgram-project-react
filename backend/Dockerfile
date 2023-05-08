@@ -2,8 +2,12 @@ FROM python:3.7-slim
 
 WORKDIR /app
 
-COPY ./ .
+COPY requirements.txt/ .
 
-RUN pip3 install -r requirements.txt --no-cache-dir
+RUN pip install --upgrade pip
 
-CMD ["gunicorn", "foodgram_django.wsgi:application", "--bind", "0:8000" ]
+RUN pip install -r requirements.txt --no-cache-dir
+
+COPY . .
+
+CMD ["gunicorn", "foodgram_django.wsgi:application", "--bind", "0:8000"]
