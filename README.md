@@ -88,7 +88,6 @@ scp nginx.conf admin@158.160.18.181:/home/admin/nginx.conf
 
 
 
-
 docker backend
 
 FROM python:3.7-slim
