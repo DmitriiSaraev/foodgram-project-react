@@ -80,7 +80,7 @@ docker-compose --version
 и home/<ваш_username>/nginx/default.conf соответственно.
 
 scp docker-compose.yml admin@158.160.2.202:/home/admin/docker-compose.yml
-scp default.conf admin@158.160.2.202:/home/admin/nginx/default.conf
+scp nginx.conf admin@158.160.2.202:/home/admin/nginx/nginx.conf
 
 
 scp -r frontend admin@158.160.12.203:/home/admin/frontend  - не надо вроде
