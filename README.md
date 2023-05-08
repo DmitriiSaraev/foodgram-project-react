@@ -57,8 +57,10 @@ sudo ufw status
 Запуск nginx:
 sudo systemctl start nginx (не запускай пока)
 
+
 Спринт 16 финальный проект Подготовьте сервер
 sudo systemctl stop nginx - остановить nginx если запущен
+
 
 Установить Докер
 sudo apt install docker.io 
@@ -88,7 +90,7 @@ scp -r frontend admin@158.160.12.203:/home/admin/frontend  - не надо вр�
 
 
 
-doc back
+docker backend
 
 FROM python:3.7-slim
 
