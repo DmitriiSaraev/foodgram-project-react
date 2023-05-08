@@ -81,8 +81,8 @@ docker-compose --version
 из вашего проекта на сервер в home/<ваш_username>/docker-compose.yaml 
 и home/<ваш_username>/nginx.conf соответственно.
 
-scp docker-compose.yml admin@158.160.2.202:/home/admin/docker-compose.yml
-scp nginx.conf admin@158.160.2.202:/home/admin/nginx.conf
+scp docker-compose.yml admin@158.160.18.181:/home/admin/docker-compose.yml
+scp nginx.conf admin@158.160.18.181:/home/admin/nginx.conf
 
 
 
