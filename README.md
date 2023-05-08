@@ -77,7 +77,7 @@ docker-compose --version
 
 Скопируйте файлы docker-compose.yaml и nginx/default.conf
 из вашего проекта на сервер в home/<ваш_username>/docker-compose.yaml 
-и home/<ваш_username>/nginx/default.conf соответственно.
+и home/<ваш_username>/nginx.conf соответственно.
 
 scp docker-compose.yml admin@158.160.2.202:/home/admin/docker-compose.yml
 scp nginx.conf admin@158.160.2.202:/home/admin/nginx.conf
