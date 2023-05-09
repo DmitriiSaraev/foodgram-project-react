@@ -66,6 +66,7 @@ class TagSerializer(serializers.ModelSerializer):
             "color",
             "slug",
         )
+        read_only_fields = ('__all__',)
 
 
 class IngredientSerializer(serializers.ModelSerializer):
@@ -156,7 +157,8 @@ class RecipeSerializer(serializers.ModelSerializer):
         # return ingredients
 
     def create(self, validated_data):
-        tags = self.get_tags()
+        # tags = self.get_tags()
+        tags = TagSerializer(many=True)
         image = validated_data.pop("image")
         ingredients = self.initial_data.get("ingredients")
         recipe = Recipe.objects.create(**validated_data, image=image)
