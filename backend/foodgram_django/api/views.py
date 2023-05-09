@@ -37,6 +37,7 @@ class UserViewSet(viewsets.ModelViewSet):
 class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
+    permission_classes = (AllowAny,)
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -163,11 +164,13 @@ class IngredientViewSet(viewsets.ModelViewSet):
     serializer_class = IngredientSerializer
     filter_backends = (DjangoFilterBackend,)
     filterset_class = IngredientFilter
+    permission_classes = (AllowAny,)
 
 
 class AmountIngredientViewSet(viewsets.ModelViewSet):
     queryset = AmountIngredient.objects.all()
     serializer_class = AmountIngredientSerializer
+    permission_classes = (AllowAny,)
 
 
 class SubscriptionsViewSet(viewsets.ModelViewSet):
