@@ -132,11 +132,6 @@ class RecipeSerializer(serializers.ModelSerializer):
             ).exists()
         return False
 
-    # def validate_tags(self, value):
-    #     if len(value) == 0:
-    #         raise serializers.ValidationError(
-    #             'У рецепта должен быть минимум 1 тег!')
-
     def get_tags(self):
         tags_id = self.context.get("request").data.get("tags")
         tags = Tag.objects.filter(id__in=tags_id)
@@ -146,19 +141,8 @@ class RecipeSerializer(serializers.ModelSerializer):
             "У рецепта должен быть минимум 1 тег!"
         )
 
-    def get_ingredients(self, dict):
-        ingredients_id = []
-        ingredients_amount = []
-        ingredients_raw = self.context.get("request").data.get("ingredients")
-        for value in ingredients_raw:
-            ingredients_id.append(value.get("id"))
-            ingredients_amount.append(value.get("amount"))
-        return Ingredient.objects.filter(id__in=ingredients_id)
-        # return ingredients
-
     def create(self, validated_data):
-        # tags = self.get_tags()
-        tags = TagSerializer(many=True)
+        tags = self.get_tags()
         image = validated_data.pop("image")
         ingredients = self.initial_data.get("ingredients")
         recipe = Recipe.objects.create(**validated_data, image=image)
@@ -172,8 +156,23 @@ class RecipeSerializer(serializers.ModelSerializer):
                 ingredient=Ingredient.objects.get(pk=ingredient.get("id")),
                 amount=ingredient.get("amount"),
             )
-
         return recipe
+
+    def update(self, instance, validated_data):
+        ingredients = validated_data.pop('ingredients')
+        tags = validated_data.pop('tags')
+        instance.image = validated_data.get('image', instance.image)
+        AmountIngredient.objects.filter(
+            recipe=instance).delete()
+        for ingredient in ingredients:
+            AmountIngredient.objects.create(
+                recipe=instance,
+                ingredient_id=ingredient['id'],
+                amount=ingredient['amount']
+            )
+        instance.tags.clear()
+        instance.tags.set(tags)
+        return super().update(instance, validated_data)
 
     class Meta:
         model = Recipe
