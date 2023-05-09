@@ -92,9 +92,19 @@ sudo docker ps -a
 посмотреть запущенные контейнеры:
 sudo docker ps
 
-
 посмотреть логи:
 sudo docker logs 69db66638e69
+
+Создаем миграции:
+sudo docker-compose exec backend python manage.py makemigrations
+
+Проводим миграции:
+sudo docker-compose exec backend python manage.py migrate
+
+Собираем статику для админки:
+sudo docker-compose exec backend python manage.py collectstatic --no-input
+
+
 
 
 docker backend
