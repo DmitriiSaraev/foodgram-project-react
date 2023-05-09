@@ -5,9 +5,10 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
-from rest_framework.pagination import PageNumberPagination
+
 from django_filters.rest_framework import DjangoFilterBackend
 from api.filters import RecipeFilter, IngredientFilter
+from api.paginations import CustomPagination
 from api.permissions import AuthorOrReadOnly
 from api.serializers import (
     UserSerializer,
@@ -30,8 +31,7 @@ from recipes.models import (
 from users.models import User
 
 
-class CustomPagination(PageNumberPagination):
-    page_size_query_param = 'limit'
+
 
 
 class UserViewSet(viewsets.ModelViewSet):
