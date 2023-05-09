@@ -38,6 +38,7 @@ class TagViewSet(viewsets.ModelViewSet):
     queryset = Tag.objects.all()
     serializer_class = TagSerializer
     permission_classes = (AllowAny,)
+    pagination_class = None
 
 
 class RecipeViewSet(viewsets.ModelViewSet):
@@ -165,12 +166,14 @@ class IngredientViewSet(viewsets.ModelViewSet):
     filter_backends = (DjangoFilterBackend,)
     filterset_class = IngredientFilter
     permission_classes = (AllowAny,)
+    pagination_class = None
 
 
 class AmountIngredientViewSet(viewsets.ModelViewSet):
     queryset = AmountIngredient.objects.all()
     serializer_class = AmountIngredientSerializer
     permission_classes = (AllowAny,)
+    pagination_class = None
 
 
 class SubscriptionsViewSet(viewsets.ModelViewSet):
