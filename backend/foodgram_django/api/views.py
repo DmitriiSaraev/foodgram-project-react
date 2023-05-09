@@ -5,6 +5,7 @@ from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from rest_framework import viewsets, status
 from rest_framework.decorators import action
+from rest_framework.pagination import PageNumberPagination
 from django_filters.rest_framework import DjangoFilterBackend
 from api.filters import RecipeFilter, IngredientFilter
 from api.permissions import AuthorOrReadOnly
@@ -29,6 +30,10 @@ from recipes.models import (
 from users.models import User
 
 
+class CustomPagination(PageNumberPagination):
+    page_size_query_param = 'limit'
+
+
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -47,6 +52,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = (AllowAny,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
+    pagination_class = CustomPagination
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
