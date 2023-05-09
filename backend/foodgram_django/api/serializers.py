@@ -172,8 +172,8 @@ class RecipeSerializer(serializers.ModelSerializer):
                 ingredient_id=ingredient['id'],
                 amount=ingredient['amount']
             )
-        instance.tag.clear()
-        instance.tag.set(tags)
+        instance.tags.clear()
+        instance.tags.set(tags)
         return super().update(instance, validated_data)
 
     class Meta:
