@@ -150,9 +150,6 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
-    # 'DEFAULT_PAGINATION_CLASS':
-    #     'rest_framework.pagination.LimitOffsetPagination',
-    # 'PAGE_SIZE': 6,
     'DEFAULT_PAGINATION_CLASS': 'api.views.CustomPagination',
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
@@ -174,3 +171,7 @@ DJOSER = {
     'HIDE_USERS': False,
 
 }
+
+# 'DEFAULT_PAGINATION_CLASS':
+#     'rest_framework.pagination.LimitOffsetPagination',
+# 'PAGE_SIZE': 6,
