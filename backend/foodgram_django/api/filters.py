@@ -9,7 +9,7 @@ class CharFilterInFilter(filters.BaseInFilter, filters.CharFilter):
 class RecipeFilter(filters.FilterSet):
     author = filters.CharFilter(field_name="author__id")
     # tag = CharFilterInFilter(field_name="tags__slug", lookup_expr="in")
-    tags = filters.ModelMultipleChoiceFilter(
+    tag = filters.ModelMultipleChoiceFilter(
         queryset=Tag.objects.all(),
         field_name='tags__slug',
         to_field_name='slug',
