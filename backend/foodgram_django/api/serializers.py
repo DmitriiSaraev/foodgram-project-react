@@ -160,7 +160,8 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         ingredients = validated_data.pop('ingredients')
-        tags = validated_data.pop('tags')
+        # tags = validated_data.pop('tags')
+        tags = self.get_tags()
         instance.image = validated_data.get('image', instance.image)
         AmountIngredient.objects.filter(
             recipe=instance).delete()
