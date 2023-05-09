@@ -16,7 +16,7 @@ SECRET_KEY = 'django-insecure-*y@3h=^&d*!rmgt=^&$_&qervu)+hep-#gslpn86mzu_*ve+*p
 
 # SECURITY WARNING: don't run with debug turned on in production!
 
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -77,7 +77,6 @@ WSGI_APPLICATION = 'foodgram_django.wsgi.application'
 
 # Database
 
-
 DATABASES = {
     'default': {
         'ENGINE': os.getenv('DB_ENGINE', default='django.db.backends.postgresql'),
@@ -88,18 +87,6 @@ DATABASES = {
         'PORT': os.getenv('DB_PORT', default=5432)
     }
 }
-
-
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'postgres',
-#         'USER': 'postgres',
-#         'PASSWORD': '123',
-#         'HOST': 'localhost',
-#         'PORT': '5432'
-#     }
-# }
 
 # Password validation
 
@@ -150,7 +137,7 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
     ],
-    'DEFAULT_PAGINATION_CLASS': 'api.paginations.CustomPagination',
+    'DEFAULT_PAGINATION_CLASS': 'api.paginations.Pagination',
     'DEFAULT_FILTER_BACKENDS': [
         'django_filters.rest_framework.DjangoFilterBackend'
     ],
@@ -171,7 +158,3 @@ DJOSER = {
     'HIDE_USERS': False,
 
 }
-
-# 'DEFAULT_PAGINATION_CLASS':
-#     'rest_framework.pagination.LimitOffsetPagination',
-# 'PAGE_SIZE': 6,

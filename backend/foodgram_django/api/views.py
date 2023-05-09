@@ -8,8 +8,7 @@ from rest_framework.decorators import action
 
 from django_filters.rest_framework import DjangoFilterBackend
 from api.filters import RecipeFilter, IngredientFilter
-from api.paginations import CustomPagination
-from api.permissions import AuthorOrReadOnly
+from api.paginations import Pagination
 from api.serializers import (
     UserSerializer,
     RecipeSerializer,
@@ -31,9 +30,6 @@ from recipes.models import (
 from users.models import User
 
 
-
-
-
 class UserViewSet(viewsets.ModelViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
@@ -52,7 +48,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     permission_classes = (AllowAny,)
     filter_backends = (DjangoFilterBackend,)
     filterset_class = RecipeFilter
-    pagination_class = CustomPagination
+    pagination_class = Pagination
 
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
@@ -145,7 +141,6 @@ class RecipeViewSet(viewsets.ModelViewSet):
         file = open("text.txt", "w")
 
         for ingredient in list_ingredient:
-            # позже попробовать сделать 1 запрос к базе
             ingredient_obj = get_object_or_404(Ingredient, id=ingredient[0])
             output_string = (
                 f"{ingredient_obj.name}"

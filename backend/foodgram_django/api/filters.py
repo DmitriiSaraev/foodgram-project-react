@@ -34,18 +34,6 @@ class RecipeFilter(filters.FilterSet):
         return queryset
 
 
-# class IngredientFilter(filters.FilterSet):
-#     name = filters.CharFilter(method="get_name")
-#
-#     def get_name(self, queryset, name, value):
-#         if value:
-#             return queryset.filter(name__startswith=value)
-#         return queryset
-#
-#     class Meta:
-#         model = Ingredient
-#         fields = ["name"]
-
 class IngredientFilter(filters.FilterSet):
     name = filters.CharFilter(lookup_expr='istartswith')
 

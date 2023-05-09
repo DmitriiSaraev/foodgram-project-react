@@ -42,18 +42,12 @@ class RecipeAdmin(admin.ModelAdmin):
         return obj.favorite_recipes.count()
 
 
-# @admin.register(Ingredient)
-# class IngredientAdmin(admin.ModelAdmin):
-#     search_fields = ('name',)
-#     inlines = (AmountIngredientInLine,)
-
-
 @admin.register(Ingredient)
 class IngredientAdmin(ImportExportModelAdmin):
     resource_class = IngredientsResource
     list_display = ('name', 'measurement_unit', 'id')
     search_fields = ('name',)
-    empty_value_display = '-пусто-'
+    empty_value_display = 'не заполнено'
 
 
 admin.site.register(AmountIngredient)
