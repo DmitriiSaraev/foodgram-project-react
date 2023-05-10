@@ -5,7 +5,7 @@ from users.models import User
 
 
 def validate_hex_color(value):
-    hex_regex = r'^#{0,1}([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
+    hex_regex = r'^#{1}([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$'
     if not re.match(hex_regex, value):
         raise ValidationError('Цвет должен быть в hex формате (#49B64E)')
 
