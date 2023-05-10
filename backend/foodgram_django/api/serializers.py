@@ -160,19 +160,33 @@ class RecipeSerializer(serializers.ModelSerializer):
 
     def update(self, instance, validated_data):
         ingredients = self.initial_data.get("ingredients")
+
+        for ingredient in ingredients:
+            if (ingredient.get('amount') <= 0
+                    or ingredient.get('amount') > 999999):
+                raise serializers.ValidationError(
+                    'Количество должно быть больше 0, но не больше 999999!'
+                )
+
         tags = self.get_tags()
         instance.image = validated_data.get('image', instance.image)
-        AmountIngredient.objects.filter(
-            recipe=instance).delete()
+        AmountIngredient.objects.filter(recipe=instance).delete()
         for ingredient in ingredients:
             AmountIngredient.objects.create(
                 recipe=instance,
                 ingredient_id=ingredient['id'],
                 amount=ingredient['amount']
             )
+
         instance.tags.clear()
         instance.tags.set(tags)
         return super().update(instance, validated_data)
+
+    def validate(self, data):
+        if self.instance.author != self.context.get('request').user:
+            raise serializers.ValidationError(
+                'Рецепт может изменять только автор этого рецепта!')
+        return data
 
     class Meta:
         model = Recipe
