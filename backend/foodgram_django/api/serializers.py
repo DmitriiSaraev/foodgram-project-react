@@ -145,6 +145,12 @@ class RecipeSerializer(serializers.ModelSerializer):
         tags = self.get_tags()
         image = validated_data.pop("image")
         ingredients = self.initial_data.get("ingredients")
+        for ingredient in ingredients:
+            if (ingredient.get('amount') <= 0
+                    or ingredient.get('amount') > 999999):
+                raise serializers.ValidationError(
+                    'Количество должно быть больше 0, но не больше 999999!'
+                )
         recipe = Recipe.objects.create(**validated_data, image=image)
 
         for tag in tags:
